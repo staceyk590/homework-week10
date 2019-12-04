@@ -127,6 +127,8 @@ const fetchUsers = async (user) => {
  // })
 //};
 
+//nameContainer.innerHTML = 'Name:<span class="main__profile-value">{res.data.name}</span>';
+
 promptUser()
   .then(function(answers) {
     const html = generateHTML(answers);
