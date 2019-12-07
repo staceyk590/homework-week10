@@ -17,24 +17,19 @@ const colors = {
     photoBorderColor: "#73448C"
   },
   pink: {
-    wrapperBackground: "#879CDF",
+    wrapperBackground: "pink",
     headerBackground: "#FF8374",
     headerColor: "white",
     photoBorderColor: "#FEE24C"
   },
   red: {
-    wrapperBackground: "#DE9967",
+    wrapperBackground: "red",
     headerBackground: "#870603",
     headerColor: "white",
     photoBorderColor: "white"
   }
 };
 
-//const github = document.querySelector ("answers.github");
-const nameContainer = document.querySelector(".main__profile-name");
-//const unContainer = document.querySelector("main__profile-username");
-//const reposContainer = document.querySelector(".main__profile-repos");
-//const urlContainer = document.querySelector(".main__profile-url");
 
 
 const writeFileAsync = util.promisify(fs.writeFile);
@@ -55,7 +50,45 @@ function promptUser() {
 }
 
 
-function generateHTML(answers) {
+promptUser()
+ .then(async function(answers) {
+   // const html = generateHTML(answers);
+   let userInfo = await fetchUsers(answers.github);
+   console.log("userInfo", userInfo);
+   console.log("name", userInfo.data.name);
+   console.log("Location", userInfo.data.location);
+   console.log("Followers", userInfo.data.followers);
+   console.log("Following",userInfo.data.following);
+   console.log("Public Repositories", userInfo.data.public_repos);
+   console.log("Bio", userInfo.data.bio);
+   const html = generateHTML(answers, userInfo);
+
+   return writeFileAsync("index.html", html);
+ })
+ .then( function() {
+   //let userInfo = await fetchUsers();
+   
+   console.log("Successfully wrote to index.html");
+ })
+ .catch(function(err) {
+   console.log(err);
+ });
+
+
+const fetchUsers = async (user) => {
+   const api_call = await fetch("https://api.github.com/users/" + user);
+   const data = await api_call.json();
+ 
+   return {data}};
+ 
+
+
+  
+  
+  
+
+
+ function generateHTML(answers, userInfo) {
   return `
 <!DOCTYPE html>
 <html lang="en">
@@ -65,6 +98,7 @@ function generateHTML(answers) {
       <meta http-equiv="X-UA-Compatible" content="ie=edge" />
       <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"/>
       <link href="https://fonts.googleapis.com/css?family=BioRhyme|Cabin&display=swap" rel="stylesheet">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
       <link rel="stylesheet" href="style.css" />
       <style>
       .photo-header {
@@ -86,59 +120,51 @@ function generateHTML(answers) {
 </head>
 
 <body>
-  <div class="jumbotron jumbotron-fluid">
-  <div class="container">
+<div class="info">
+  <div class="wrapper jumbotron jumbotron-fluid">
+  <div class="container center-block text-center">
     
-    <h1 class="display-4">Hi! My favorite color is ${answers.color}</h1>
-    <ul class="list-group">
-      <li class="list-group-item">My GitHub username is ${answers.github}</li>
-    </ul>
+    <h1 class="display-4">Hi! My name is ${userInfo.data.name}</h1>
+      <h2class="list-group-item">${userInfo.data.company}</h2>
   </div>
-  <div class="main-profile">
-      <div class="row">
-        <div class="col-md-6">
-          <p class="main__profile-name main__profile-key"></p>
-        <div class="col-md-6">
-          <p class="main__profile-repo main__profile-key"></p>
-          <p class="main__profile-url main__profile-key"></p>
-        </div>
-        </div>
-      </div>
+  
+  
+  <div class="row">
+    <div class="col-sm-12 center-block text-center">
+    <p>${userInfo.data.location}</p>
+  <a  href="${userInfo.data.html_url}">Github</a>
+  <a href="${userInfo.data.blog}"> Blog</a>
+
+  </div>
+  </div>
+  </div>
+  
+
+  <div class="container text-center">
+    <h1>BIO</h1>      
+    <p>${userInfo.data.bio}</p>
+  </div>
+
+  
+<div class="info container-fluid bg-3 text-center">    
+  <div class="row">
+    <div class="col-sm-6">
+      <p>Followers ${userInfo.data.followers}</p>
+    </div>
+    <div class="info col-sm-6"> 
+      <p>Following ${userInfo.data.following}</p>
+    </div>
+  </div>
+</div>
+<div class="info container-fluid bg-3 text-center">  
+  <div class="row">
+    <div class="col-sm-12">
+      <p>Public Repositories ${userInfo.data.public_repos}</p>
+    </div>
+</div>
+</div>
   </div>
   </div>
 </body>
 </html>`;
 }
-
-
-
-
-const fetchUsers = async (user) => {
-   const api_call = await fetch('https://api.github.com/users/staceyk590');
-   const data = await api_call.json();
-   return {data}
-   console.log(data)};
-
-
-  
-//const showData = () => {
- // fetchUsers (staceyk560). then((res) => {
- //   console.log(res);
- // })
-//};
-
-//nameContainer.innerHTML = 'Name:<span class="main__profile-value">{res.data.name}</span>';
-
-promptUser()
-  .then(function(answers) {
-    const html = generateHTML(answers);
-
-    return writeFileAsync("index.html", html);
-  })
-  .then(function() {
-    fetchUsers();
-    console.log("Successfully wrote to index.html");
-  })
-  .catch(function(err) {
-    console.log(err);
-  });

@@ -1,0 +1,25 @@
+{
+  "name": "homework-week10",
+  "version": "1.0.0",
+  "description": "Homework-week10",
+  "main": "index.js",
+  "dependencies": {
+    "fetch": "^1.1.0",
+    "inquirer": "^7.0.0",
+    "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/staceyk590/homework-week10.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/staceyk590/homework-week10/issues"
+  },
+  "homepage": "https://github.com/staceyk590/homework-week10#readme"
+}
